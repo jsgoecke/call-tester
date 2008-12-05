@@ -37,7 +37,6 @@
 #and the profile to use from above.
 :treatment_strategies:
   - treat1:
-      :name: treat1            #Must match the '- foo' name exactly
       :number: 1000            #This is the number to dial
       :dial: dial1             #Which dial strategy to you want to use above
       :callerid: HammerTreatent1 <0123>
@@ -47,7 +46,6 @@
       :after_delay: 2          #This may be set to zer to have no delay
       :message: tt-monkeys     #Message to play, this may be blank to play no message
   - treat2:
-      :name: treat2
       :number: 2000
       :dial: dial1
       :callerid: HammerTreatent2 <4567>
@@ -57,7 +55,6 @@
       :after_delay: 2
       :message: tt-monkeys
   - treat3:
-      :name: treat3
       :number: 3000
       :dial: dial2
       :callerid: HammerTreatent3 <8901>

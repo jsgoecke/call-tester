@@ -51,8 +51,12 @@ class Hammer
   
   #Method to execute a call for each of the treatment strategies set
   def execute_strategies
-    COMPONENTS.hammer[:treament_strategies].each do |treatment_strategy|
-      result = launch_call(treatment_strategy)
+    COMPONENTS.hammer[:treatment_strategies].each do |treatment_strategy|
+      strategy_name = treament_strategy.each_key {|key| key}
+      treatment_strategy = treatment_strategy.each_value {|value| value}
+      ahn_log.hammer.debug "Strategy Name: " + strategy_name
+      ahn_log.hammer.debug "Treatment Strategy: " + treatment_strategy.inspect
+      result = launch_call(strategy_name, treatment_strategy)
       if COMPONENTS.hammer[:common][:delay_between_calls] == 'random'
         sleep rand(COMPONENTS.hammer[:common][:max_random_between_calls])
       else
@@ -62,7 +66,7 @@ class Hammer
   end
   
   #Launch the individual phone calls
-  def launch_call(treatment_strategy)
+  def launch_call(strategy_name, treatment_strategy)
     channel = COMPONENTS.hammer[:dial_strategies][treatment_strategy[:dial]][:channel] + treatment_strategy[:number].to_s
     options = { "Channel" => channel,
                 "Context" =>  COMPONENTS.hammer[:dial_strategies][treatment_strategy[:dial]][:context],
@@ -70,16 +74,21 @@ class Hammer
                 "Priority" => COMPONENTS.hammer[:dial_strategies][treatment_strategy[:dial]][:priority],
                 "Callerid" => treatment_strategy[:callerid],
                 "Timeout" => COMPONENTS.hammer[:dial_strategies][treatment_strategy[:dial]][:timeout],
-                "Variable" => "strategy_name=" + treatment_strategy[:name],
+                "Variable" => "strategy_name=" + strategy_name,
 				        "Async" => COMPONENTS.hammer[:dial_strategies][treatment_strategy[:dial]][:async] }
+		ahn_log.debug.hammer "Dial options == " + options.inspect
     result = Adhearsion::VoIP::Asterisk.manager_interface.originate options
     return result
   end
 
 end
 
-#Now launch the hammer and let it run
-Thread.new do
-  sleep COMPONENTS.hammer[:common][:initial_delay].to_i
-  Hammer.new.start
+begin
+  #Now launch the hammer and let it run
+  Thread.new do
+    sleep COMPONENTS.hammer[:common][:initial_delay].to_i
+    Hammer.new.start
+  end
+rescue => err
+  ahn_log.hammer.error err
 end
