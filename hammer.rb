@@ -78,9 +78,8 @@ class Hammer
                 "Timeout" => COMPONENTS.hammer[:dial_strategies][0][treatment_strategy[:dial]][:timeout],
                 "Variable" => "strategy_name=" + strategy_name,
 				        "Async" => COMPONENTS.hammer[:dial_strategies][0][treatment_strategy[:dial]][:async] }
-		ahn_log.hammer.debug "Options to dial"
-		ahn_log.hammer.debug options.inspect
     result = Adhearsion::VoIP::Asterisk.manager_interface.originate options
+    ahn_log.hammer.debug result["Message"]
     return result
   end
 
