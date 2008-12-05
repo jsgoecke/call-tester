@@ -10,7 +10,7 @@ methods_for :dialplan do
 
     treatment_strategy = COMPONENTS.hammer[:treatment_strategies].find { |value| value[strategy_name] }
 
-    if treatment_strategy[strategy_name][:record] == 'true'
+    if treatment_strategy[strategy_name][:record] == true
       record "hammer-#{strategy_name}-#{UUID.random_create}.gsm"
     end
     
