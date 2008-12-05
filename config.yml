@@ -1,4 +1,6 @@
 #Config file for the Dialer App
+
+#All of the common configuration items
 :common:
     :initial_delay: 5 #Number of seconds to wait to allow the Adhearsion framework to initialize
     :cycle_length: 1 #Number of calls to launch for each dial_strategy per cycle
@@ -63,3 +65,9 @@
       :before_delay: 2
       :after_delay: 2
       :message: tt-monkeys
+      
+#If you would like the far side to be treated from this same instance you may set your
+#configuration options here
+:called_treatment:
+    :message: tt-monkeys
+    :call_length: 180

@@ -1,5 +1,7 @@
 #Method exposed to dialplan.rb that will treat the incoming calls
 methods_for :dialplan do  
+  
+  #Call this method from the dialplan to treat the resulting call being placed out
   def treat_call
     #First we collect the variables from the Asterisk channel with instructions on what to do with this call
     strategy_name = get_variable "strategy_name"
@@ -10,10 +12,26 @@ methods_for :dialplan do
       dtmf COMPONENTS.hammer[:treatment_strategies][strategy_name][:dtmf]
       sleep COMPONENTS.hammer[:treatment_strategies][strategy_name][:after_delay].to_i
     end
-    if message != nil
-      play COMPONENTS.hammer[:treatment_strategies][strategy_name][:message]
+    
+    start_time = Time.now
+    while Time.now < start_time + COMPONENTS.hammer[:treatment_strategies][strategy_name][:call_length].to_i.seconds do
+      if message != nil
+        play COMPONENTS.hammer[:treatment_strategies][strategy_name][:message]
+      else
+        sleep COMPONENTS.hammer[:treatment_strategies][strategy_name][:call_length].to_i
+      end
     end
-    sleep COMPONENTS.hammer[:treatment_strategies][strategy_name][:call_length].to_i
+    
+    hangup
+  end
+  
+  #Call this method from the dialplan if you would also like to serve some treatments to the receiving Asterisk
+  def treat_called
+    start_time = Time.now
+    while Time.now < start_time + COMPONENTS.hammer[:called_treatment][:call_length].to_i.seconds do
+      play COMPONENTS.hammer[:called_treatment][:message]
+    end
+    hangup
   end
 end
 
