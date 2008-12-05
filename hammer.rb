@@ -1,3 +1,5 @@
+require 'uuidtools'
+
 #Method exposed to dialplan.rb that will treat the incoming calls
 methods_for :dialplan do  
   
@@ -6,6 +8,10 @@ methods_for :dialplan do
     #First we collect the variables from the Asterisk channel with instructions on what to do with this call
     strategy_name = get_variable "strategy_name"
 
+    if COMPONENTS.hammer[:treatment_strategies][strategy_name][:record] == 'true'
+      record "hammer-#{strategy_name}-#{UUID.random_create}.gsm"
+    end
+    
     #Now, lets treat the call
     sleep COMPONENTS.hammer[:common][:before_delay].to_i
     if send_dtmf != nil

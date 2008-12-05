@@ -47,6 +47,7 @@
       :before_delay: 2         #This may be set to zero to have no delay
       :after_delay: 2          #This may be set to zer to have no delay
       :message: tt-monkeys     #Message to play, this may be blank to play no message
+      :record: true            #Set to true to record these calls
   - treat2:
       :number: 2000
       :dial: dial1
@@ -56,6 +57,7 @@
       :before_delay: 2
       :after_delay: 2
       :message: tt-monkeys
+      :record: true
   - treat3:
       :number: 3000
       :dial: dial2
@@ -65,6 +67,7 @@
       :before_delay: 2
       :after_delay: 2
       :message: tt-monkeys
+      :record: false
       
 #If you would like the far side to be treated from this same instance you may set your
 #configuration options here

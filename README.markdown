@@ -11,6 +11,7 @@ Requirements?
 [Ruby v1.8.6+]: http://www.rubylang.org or [JRuby v1.1.5+]: http://jruby.codehaus.org/
 [Asterisk v1.4+]: http://www.asterisk.org
 [Adhearsion v0.8+]: http://www.adhersion.com
+[Uuid-tools gem]
 
 How does it work?
 =================
@@ -20,7 +21,7 @@ The Hammer component uses Adhearsion to generate call traffic via Asterisk. More
 Installing
 ==========
 
-In 'path_to_your_ahn_project/components/' do the following:
+In path_to_your_ahn_project/components/ do the following:
 
 git clone git://github.com/jsgoecke/hammer.git
 
