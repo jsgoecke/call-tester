@@ -1,5 +1,6 @@
 #Config file for the Dialer App
 :common:
+    :initial_delay: 5 #Number of seconds to wait to allow the Adhearsion framework to initialize
     :cycle_length: 1 #Number of calls to launch for each dial_strategy per cycle
     :delay_between_cycle: 300 #Number of seconds to delay between each cylce of the treatment_strategies
     :delay_between_calls: 2 #Seconds to delay between launching each call, may also be random

@@ -79,4 +79,7 @@ class Hammer
 end
 
 #Now launch the hammer and let it run
-Hammer.new.start
+Thread.new do
+  sleep COMPONENTS.hammer[:common][:initial_delay].to_i
+  Hammer.new.start
+end
