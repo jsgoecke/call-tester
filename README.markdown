@@ -3,9 +3,93 @@ Copyright (C) 2008 Jason Goecke
 What is Hammer?
 ==============
 
+The Hammer is an Adhearsion component used to generate live inbound call load on an another Asterisk or Telephony system. The Hammer also provides a facility to play DTMF tones at the beginning of a call in order to traverse an IVR menu. The intent is to use this component to load test telephony systems.
+
+Requirements?
+=============
+
+*Ruby v1.8.6+ or JRuby v1.1.5+
+*Asterisk v1.4+
+*Adhearsion v0.8+
+
 How does it work?
 =================
+
+The Hammer component uses Adhearsion to generate call traffic via Asterisk. More to come...
 
 Setting up Hammer
 =================
 
+#Config file for the Dialer App
+
+#All of the common configuration items
+:common:
+    :initial_delay: 5 #Number of seconds to wait to allow the Adhearsion framework to initialize
+    :cycle_length: 1 #Number of calls to launch for each dial_strategy per cycle
+    :delay_between_cycle: 300 #Number of seconds to delay between each cylce of the treatment_strategies
+    :delay_between_calls: 2 #Seconds to delay between launching each call, may also be random
+    :max_random_between_calls: 5 #Maximum call length when random is used for delay_between_calls
+    :max_random_call_length: 200 #Maximum call length when random is used for call_length
+    :thread_cycles: false #Set this to true to launch each dial_strategy cycle in its own thread to create simultaneous calling of all treatment strategies
+
+#Settings for the Originate command to the Manager API, each one is a unique profile
+#Context must be adhearsion_hammer unless you have written your own either in Adhearsion
+#or in the Asterisk dialplan. Also, extension and priority should match what you have
+#put in your dialplan. The recommended dialplan in Asterisk is:
+#   [adhearsion_hammer]
+#   exten => 1000,1,AGI(agi://path_to_adhearsion_hammer_agi_server)
+#   exten => 1000,2,Hangup
+#Each strategy number must be in order: 1, 2, 3, etc
+:dial_strategies:
+  - dial1: 
+      :channel: IAX2/adhearsion_hammer:hammer1234@call.mydomain.net/ 
+      :context: adhearsion_hammer
+      :extension: 1000
+      :priority: 1
+      :timeout: 43200000
+      :async: TRUE
+  - dial2: 
+      :channel: IAX2/teliax/
+      :context: adhearsion_hammer
+      :extension: 1000
+      :priority: 1
+      :timeout: 43200000
+      :async: TRUE
+  
+#This is where you set how many calls in a cycle you want to launch and of what type
+#each of the elements below will launch one call with the dtmf settings, the lenght of call
+#and the profile to use from above.
+:treatment_strategies:
+  - treat1:
+      :number: 1000            #This is the number to dial
+      :dial: dial1             #Which dial strategy to you want to use above
+      :callerid: HammerTreatment1 <0123>
+      :dtmf: 'wwww#wwww1' #This may be blank to send no DTMF
+      :call_length: 180        #This may be set to random
+      :before_delay: 2         #This may be set to zero to have no delay
+      :after_delay: 2          #This may be set to zer to have no delay
+      :message: tt-monkeys     #Message to play, this may be blank to play no message
+  - treat2:
+      :number: 2000
+      :dial: dial1
+      :callerid: HammerTreatment2 <4567>
+      :dtmf: 'wwww#wwww1'
+      :call_length: 180
+      :before_delay: 2
+      :after_delay: 2
+      :message: tt-monkeys
+  - treat3:
+      :number: 3000
+      :dial: dial2
+      :callerid: HammerTreatment3 <8901>
+      :dtmf: 'wwww#wwww1'
+      :call_length: 180
+      :before_delay: 2
+      :after_delay: 2
+      :message: tt-monkeys
+      
+#If you would like the far side to be treated from this same instance you may set your
+#configuration options here
+:called_treatment:
+    :message: tt-monkeys
+    :call_length: 180
