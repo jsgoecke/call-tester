@@ -14,14 +14,14 @@ methods_for :dialplan do
     
     #Now, lets treat the call
     sleep COMPONENTS.hammer[:common][:before_delay].to_i
-    if send_dtmf != nil
+    if COMPONENTS.hammer[:treatment_strategies][0][strategy_name][:send_dtmf] != nil
       dtmf COMPONENTS.hammer[:treatment_strategies][0][strategy_name][:dtmf]
       sleep COMPONENTS.hammer[:treatment_strategies][0][strategy_name][:after_delay].to_i
     end
     
     start_time = Time.now
     while Time.now < start_time + COMPONENTS.hammer[:treatment_strategies][0][strategy_name][:call_length].to_i.seconds do
-      if message != nil
+      if COMPONENTS.hammer[:treatment_strategies][0][strategy_name][:message] != nil
         play COMPONENTS.hammer[:treatment_strategies][0][strategy_name][:message]
       else
         sleep COMPONENTS.hammer[:treatment_strategies][0][strategy_name][:call_length].to_i
