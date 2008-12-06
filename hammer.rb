@@ -24,7 +24,12 @@ methods_for :dialplan do
     start_time = Time.now
     while Time.now < start_time + treatment_strategy[strategy_name][:call_length].to_i.seconds do
       if treatment_strategy[strategy_name][:message] != nil
-        play treatment_strategy[strategy_name][:message]
+        begin
+          play treatment_strategy[strategy_name][:message]
+        rescue => err
+          ahn_log.hammer.warn "Tried to play a file to a hungup channel"
+          return
+        end
       else
         sleep treatment_strategy[strategy_name][:call_length].to_i
       end
