@@ -1,5 +1,9 @@
-Shoes.app :width => 200, :height => 470, :title => 'Hammer Controls' do
+#Gui written with Shoes to control the Hammer
+Shoes.app :width => 200, :height => 500, :title => 'Hammer Controls' do
   @hostname = nil
+  @default_drb_port = 9050
+  
+  #Set some background colors
   background '#FFFFFF' #'rgb(255, 255, 255)'
   fill rgb(0, 0.6, 0.9, 0.1)
   stroke rgb(0, 0.6, 0.9)
@@ -9,22 +13,38 @@ Shoes.app :width => 200, :height => 470, :title => 'Hammer Controls' do
       :top => (-5..self.height).rand,
       :radius => (25..50).rand
   }
-  stack :center => true, :resizeable => true, :margin => 30 do
+  
+  #Create a 'stack' of elements that are grouped together
+  stack :center => true, :width => 200, :margin => 30 do
     image 'img/hammer.jpg'
-    #How do I get the text back?
     @hostname = edit_line :width => 120
     button 'Hammer Status' do
-      alert 'Hammer Status is...'
+      if @hostname.text == ''
+        alert 'Please enter in a hostname and port in the text field (ie - localhost:9050)'
+      else      
+        #Add some code here
+        alert "Hammer Status is... @ #{@hostname.text}"
+      end
     end
     button 'Start Hammer' do
-      if confirm("Are you sure you want to start the hammer?")
-        alert "Starting the hammer @ #{@hostname.text}"
+      if @hostname.text == ''
+        alert 'Please enter in a hostname and port in the text field (ie - localhost:9050)'
+      else
+        if confirm("Are you sure you want to start the hammer?")
+          #Add some code here
+          alert "Starting the hammer @ #{@hostname.text}"
+        end
       end
     end
     button 'Stop Hammer' do
-      if confirm("Are you sure you want to stop the hammer?")
-        alert 'Stoping the hammer...'
-      end
+      if @hostname.text == ''
+        alert 'Please enter in a hostname and port in the text field (ie - localhost:9050)'
+      else
+        if confirm("Are you sure you want to stop the hammer?")
+          #Add some code here
+          alert "Stopping the hammer @ #{@hostname.text}"
+        end
+      end    
     end
     button 'Quit' do
       if confirm("Are you sure you want to quit?")
@@ -32,5 +52,10 @@ Shoes.app :width => 200, :height => 470, :title => 'Hammer Controls' do
       end
     end
   end
-  #para 'Copyright (C) 2008 Jason Goecke', :align => 'center', :bottom => 0
+  
+  para 'Copyright (C) 2008 Jason Goecke', :align => 'center', :size => 8
+end
+
+#Use this method to connect to the DRb service
+def connect_to_drb(url)
 end

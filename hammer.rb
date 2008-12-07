@@ -105,7 +105,12 @@ class Hammer
   
   #Method to stop the Hammer
   def stop
-    @running = stop
+    @running = false
+  end
+  
+  #Method to expose the status of the Hammer
+  def running_status
+    return @running
   end
   
   #Method to save data to the CouchDB instance
