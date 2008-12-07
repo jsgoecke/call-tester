@@ -1,4 +1,5 @@
 require 'uuidtools'
+require 'couchrest'
 
 #Method exposed to dialplan.rb that will treat the incoming calls
 methods_for :dialplan do  
@@ -48,22 +49,62 @@ methods_for :dialplan do
   end
 end
 
+methods_for :events do
+  def log_to_db(data)
+    ahn_log.hammer.log_to_db.debug 'Here I am!'
+    @@db.save(data)
+  end
+end
+
+methods_for :rpc do
+  def start_hammer
+    @hammer.start
+    @ahn_log.hammer.debug 'Hammer started...'
+  end
+  def stop_hammer
+    @hammer.stop
+    @ahn_log.hammer.debug 'Hammer stopped...'
+  end
+end
+
 #Hammer class
 class Hammer
   
-  def initialize  
-  end
-  
-  def start
-    #Loop making the calls until someone kills us
-    loop do
-      make_calls
-      sleep COMPONENTS.hammer[:common][:delay_between_cycles]
+  def initialize 
+    #Set the running state to what is the configured start state in config.yml
+    @running =  COMPONENTS.hammer[:common][:auto_start]
+    ahn_log.hammer.debug "Auto-start set to #{COMPONENTS.hammer[:common][:auto_start].to_s}"
+    #Connect to our document database if enabled
+    if COMPONENTS.hammer[:common][:enable_db] == true
+      @db = CouchRest.database!("http://localhost:5984/hammer")
     end
   end
   
-  private 
+  def run
+    #Loop making the calls until someone kills us
+    loop do
+      #If the Hammer is running than initiate calls otherwise sleep
+      #and check again
+      if @running == true
+        make_calls
+        sleep COMPONENTS.hammer[:common][:delay_between_cycles]
+      else
+        sleep 2
+      end
+    end
+  end 
   
+  #Method to start the Hammer
+  def start
+    @running = true
+  end
+  
+  #Method to stop the Hammer
+  def stop
+    @running = stop
+  end
+  
+  private
   #Method to initiate the call blocks and determine if they 
   #should be done in threads simultaneously or synchronously 
   def make_calls
@@ -120,9 +161,9 @@ begin
   #Now launch the hammer and let it run
   Thread.new do
     sleep COMPONENTS.hammer[:common][:initial_delay].to_i
-    Hammer.new.start
+    @hammer = Hammer.new.run
   end
 rescue => err
-  ahn_log.hammer.error "Error when attempting to start the Hammer"
+  ahn_log.hammer.error "Error when attempting to auto start the Hammer"
   ahn_log.hammer.error err
 end

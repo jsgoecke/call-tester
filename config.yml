@@ -9,6 +9,9 @@
     :max_random_between_calls: 5 #Maximum call length when random is used for delay_between_calls
     :max_random_call_length: 200 #Maximum call length when random is used for call_length
     :thread_cycles: false #Set this to true to launch each dial_strategy cycle in its own thread to create simultaneous calling of all treatment strategies
+    :auto_start: true #Set to true to start the hammer at startup or false to allow it to be started by the GUI
+    :enable_db: false #Set to true if you would like to log events to CouchDB for analisys
+    :db_uri: http://localhost:5984/hammer #URL to the CouchDB instance and database you would like to store events
 
 #Settings for the Originate command to the Manager API, each one is a unique profile
 #Context must be adhearsion_hammer unless you have written your own either in Adhearsion
