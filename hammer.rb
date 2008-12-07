@@ -49,13 +49,17 @@ methods_for :dialplan do
   end
 end
 
+#Methods to expose to events.rb
 methods_for :events do
   def log_to_db(data)
-    ahn_log.hammer.log_to_db.debug 'Here I am!'
-    @@db.save(data)
+    if COMPONENTS.hammer[:common][:enable_db] == true
+      @hammer.log_to_db(data)
+      ahn_log.hammer.log_to_db.debug 'Here I am!'
+    end
   end
 end
 
+#Methods to expose to the RPC, in this case via DRb
 methods_for :rpc do
   def start_hammer
     @hammer.start
@@ -102,6 +106,11 @@ class Hammer
   #Method to stop the Hammer
   def stop
     @running = stop
+  end
+  
+  #Method to save data to the CouchDB instance
+  def log_to_db(data)
+    @db.save(data)
   end
   
   private
