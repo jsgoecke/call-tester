@@ -1,19 +1,32 @@
-#Config file for the Dialer App
+#Config file for the Hammer App
 
 #All of the common configuration items
+#:common:
+#    :initial_delay: 5                       Number of seconds to wait to allow the Adhearsion framework to initialize when starting hammer
+#    :cycle_length: 1                        Number of calls to launch for each treatment_strategy per cycle (cycle_length: 4 with 3 treatment strategies configured below will launch 12 total calls)
+#    :delay_between_cycle: 300               Number of seconds to delay between each cylce of the dial_strategies
+#    :delay_between_calls: 2                 Seconds to delay between launching each call, may also be set to: random
+#    :max_random_between_calls: 5            Maximum call length when random is used for delay_between_calls above
+#    :max_random_call_length: 200            Maximum call length when treatment_strategies -> call_length is set to: random
+#    :thread_cycles: false                   Set this to true to launch each cycle in its own thread. Does nothing if cycle_length set to 1
+#    :auto_start: true                       Set to true to start the hammer at startup or false to allow it to be started by the GUI
+#    :enable_db: false                       Set to true if you would like to log events to CouchDB for analisys
+#    :db_uri: http://localhost:5984/hammer   URL to the CouchDB instance and database you would like to store events
+
 :common:
-    :initial_delay: 5 #Number of seconds to wait to allow the Adhearsion framework to initialize
-    :cycle_length: 1 #Number of calls to launch for each dial_strategy per cycle
-    :delay_between_cycle: 300 #Number of seconds to delay between each cylce of the treatment_strategies
-    :delay_between_calls: 2 #Seconds to delay between launching each call, may also be random
-    :max_random_between_calls: 5 #Maximum call length when random is used for delay_between_calls
-    :max_random_call_length: 200 #Maximum call length when random is used for call_length
-    :thread_cycles: false #Set this to true to launch each dial_strategy cycle in its own thread to create simultaneous calling of all treatment strategies
-    :auto_start: true #Set to true to start the hammer at startup or false to allow it to be started by the GUI
-    :enable_db: false #Set to true if you would like to log events to CouchDB for analisys
-    :db_uri: http://localhost:5984/hammer #URL to the CouchDB instance and database you would like to store events
+    :initial_delay: 5
+    :cycle_length: 1
+    :delay_between_cycle: 300
+    :delay_between_calls: 2
+    :max_random_between_calls: 5
+    :max_random_call_length: 200
+    :thread_cycles: false
+    :auto_start: true
+    :enable_db: false
+    :db_uri: http://localhost:5984/hammer
 
 #Settings for the Originate command to the Manager API, each one is a unique profile
+#You may have many dial_strategies, but only one is required.
 #Context must be adhearsion_hammer unless you have written your own either in Adhearsion
 #or in the Asterisk dialplan. Also, extension and priority should match what you have
 #put in your dialplan. The recommended dialplan in Asterisk is:
@@ -21,9 +34,19 @@
 #   exten => 1000,1,AGI(agi://path_to_adhearsion_hammer_agi_server)
 #   exten => 1000,2,Hangup
 #Each strategy number must be in order: 1, 2, 3, etc
+
+#:dial_strategies:
+#  - dial1: 
+#      :channel: IAX2/adhearsion_hammer:hammer1234@call.mydomain.net/    channel to use to dial the call. dial_strategies.channel + treatment_strategies.number = dial string
+#      :context: adhearsion_hammer                                       the local context to use to make the AGI call.  adhearsion_hammer in example above.
+#      :extension: 1000                                                  extension to pattern match on in the local context
+#      :priority: 1                                                      the priority(line number) in the pattern matched to go to
+#      :timeout: 43200000                                                #(milliseconds) for the originating connection to happen(defaults is 30000 milliseconds)
+#      :async: TRUE                                                      #true or false. Allows multiple calls to be generated without waiting for a response
+
 :dial_strategies:
   - dial1: 
-      :channel: IAX2/adhearsion_hammer:hammer1234@call.mydomain.net/ 
+      :channel: IAX2/adhearsion_hammer:hammer1234@call.mydomain.net/
       :context: adhearsion_hammer
       :extension: 1000
       :priority: 1
@@ -40,17 +63,30 @@
 #This is where you set how many calls in a cycle you want to launch and of what type
 #each of the elements below will launch one call with the dtmf settings, the lenght of call
 #and the profile to use from above.
+
+#:treatment_strategies:
+#  - treat1:
+#      :number: 1000                         This is the phone number to dial on the destination system
+#      :dial: dial1                          Which dial strategy to you want to use above
+#      :callerid: HammerTreatment1 <0123>    must be in the format: Name <##########>  Name is optional
+#      :dtmf: 'wwww#wwww1'                   [0-9], # and *.  w = wait half a second. This may be blank to send no DTMF at all
+#      :call_length: 180                     (seconds) This may be set to random
+#      :before_delay: 2                      (seconds) This may be set to zero to have no delay
+#      :after_delay: 2                       (seconds) This may be set to zer to have no delay
+#      :message: tt-monkeys                  name of audio file to play in /var/lib/asterisk/sounds. This may be blank to play no message
+#      :record: true                         Set to true to record each call.  Stored in /var/spool/asterisk/monitor
+
 :treatment_strategies:
   - treat1:
-      :number: 1000            #This is the number to dial
-      :dial: dial1             #Which dial strategy to you want to use above
+      :number: 1000
+      :dial: dial1
       :callerid: HammerTreatment1 <0123>
-      :dtmf: 'wwww#wwww1' #This may be blank to send no DTMF
-      :call_length: 180        #This may be set to random
-      :before_delay: 2         #This may be set to zero to have no delay
-      :after_delay: 2          #This may be set to zer to have no delay
-      :message: tt-monkeys     #Message to play, this may be blank to play no message
-      :record: true            #Set to true to record these calls
+      :dtmf: 'wwww#wwww1'
+      :call_length: 180
+      :before_delay: 2
+      :after_delay: 2
+      :message: tt-monkeys
+      :record: true
   - treat2:
       :number: 2000
       :dial: dial1
@@ -72,8 +108,17 @@
       :message: tt-monkeys
       :record: false
       
-#If you would like the far side to be treated from this same instance you may set your
-#configuration options here
+#If you would like the far side to be treated from this same instance you may set yourn configuration options here
+#The recommended dialplan in the remote Asterisk is:
+#   [adhearsion_hammer]
+#   exten => 1000,1,AGI(agi://path_to_adhearsion_hammer_agi_server)
+#   exten => 1000,2,Hangup
+#Do not forget that you will need to configure the channel, SIP, IAX2, etc. (depending on your dial_strategies=>channel setting above) conf files to recieve those calls.
+
+#:called_treatment:
+#    :message: tt-monkeys                   message to play on the remote server so you have 2 way audio simulation
+#    :call_length: 180                      (seconds) length of time to keep the call open on the remote asterisk server
+
 :called_treatment:
     :message: tt-monkeys
     :call_length: 180
