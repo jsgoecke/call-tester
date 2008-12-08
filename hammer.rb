@@ -1,5 +1,8 @@
 require 'uuidtools'
-require 'couchrest'
+
+if COMPONENTS.hammer[:common][:enable_db] == true
+  require 'couchrest'
+end
 
 #Method exposed to dialplan.rb that will treat the incoming calls
 methods_for :dialplan do  
