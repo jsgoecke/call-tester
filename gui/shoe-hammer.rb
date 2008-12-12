@@ -41,8 +41,8 @@ Shoes.app :width => 200, :height => 500, :title => 'Hammer Controls' do
         alert 'Please enter in a hostname and port in the text field (ie - localhost:9050)'
       else
         if confirm("Are you sure you want to stop the hammer?")
-          #Add some code here
-          alert "Stopping the hammer @ #{@hostname.text}"
+          result = connect_to_drb(@hostname.text, 'stop')
+          alert "Stopping the hammer @ #{@hostname.text}. Result: #{result[:message]}"
         end
       end    
     end
@@ -57,5 +57,19 @@ Shoes.app :width => 200, :height => 500, :title => 'Hammer Controls' do
 end
 
 #Use this method to connect to the DRb service
-def connect_to_drb(url)
+def connect_to_drb(url, action)
+  begin
+    hammer = DRbObject.new_with_uri url
+    case action
+    when 'start'
+      result = hammer.start_calls
+    when 'stop'
+      result = hammer.stop_calls
+    when 'status'
+      result = hammer.running_status
+    end
+    return { :status => 'ok', :message => result }
+  rescue => err
+    return { :status => 'error', :message => err }
+  end
 end

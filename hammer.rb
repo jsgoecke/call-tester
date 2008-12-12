@@ -1,7 +1,22 @@
 require 'uuidtools'
 
-if COMPONENTS.hammer[:common][:enable_db] == true
-  require 'couchrest'
+initialization do
+  begin
+    #Now launch the hammer and let it run
+    Thread.new do
+      if COMPONENTS.hammer[:common][:enable_db] == true
+        require 'couchrest'
+        ::DATABASE = CouchRest.database!(COMPONENTS.hammer[:common][:db_uri])
+      end
+      
+      ::HAMMER_OBJ = Hammer.new
+      sleep COMPONENTS.hammer[:common][:initial_delay].to_i
+      ::HAMMER_OBJ.run
+    end
+  rescue => err
+    ahn_log.hammer.error "Error when attempting to auto start the Hammer"
+    ahn_log.hammer.error err
+  end
 end
 
 #Method exposed to dialplan.rb that will treat the incoming calls
@@ -54,41 +69,34 @@ end
 
 #Methods to expose to events.rb
 methods_for :events do
-  def log_to_db(data)
-    if COMPONENTS.hammer[:common][:enable_db] == true
-      @hammer.log_to_db(data)
-      ahn_log.hammer.log_to_db.debug 'Here I am!'
-    end
+  def log_event(data)
+    ::DATABASE.save(data)
   end
 end
 
 #Methods to expose to the RPC, in this case via DRb
 methods_for :rpc do
   def start_hammer
-    @hammer.start
-    @ahn_log.hammer.debug 'Hammer started...'
+    ::HAMMER_OBJ.start
+    ahn_log.hammer.debug 'Hammer started...'
   end
   def stop_hammer
-    @hammer.stop
-    @ahn_log.hammer.debug 'Hammer stopped...'
+    ::HAMMER_OBJ.stop
+    ahn_log.hammer.debug 'Hammer stopped...'
   end
 end
 
 #Hammer class
 class Hammer
   
+  public
   def initialize 
-    #Set the running state to what is the configured start state in config.yml
     @running =  COMPONENTS.hammer[:common][:auto_start]
-    ahn_log.hammer.debug "Auto-start set to #{COMPONENTS.hammer[:common][:auto_start].to_s}"
-    #Connect to our document database if enabled
-    if COMPONENTS.hammer[:common][:enable_db] == true
-      @db = CouchRest.database!("http://localhost:5984/hammer")
-    end
   end
   
   def run
     #Loop making the calls until someone kills us
+    ahn_log.hammer.debug "Hammer initialized..."
     loop do
       #If the Hammer is running than initiate calls otherwise sleep
       #and check again
@@ -102,23 +110,21 @@ class Hammer
   end 
   
   #Method to start the Hammer
-  def start
+  def start_calls
     @running = true
+    ahn_log.hammer.debug 'Calls started...'
   end
   
   #Method to stop the Hammer
-  def stop
+  def stop_calls
     @running = false
+    ahn_log.hammer.debug 'Calls stopped...'
   end
   
   #Method to expose the status of the Hammer
   def running_status
     return @running
-  end
-  
-  #Method to save data to the CouchDB instance
-  def log_to_db(data)
-    @db.save(data)
+    ahn_log.hammer.debug "Status requested...sent as #{@running.to_s}..."
   end
   
   private
@@ -172,15 +178,4 @@ class Hammer
     return result
   end
 
-end
-
-begin
-  #Now launch the hammer and let it run
-  Thread.new do
-    sleep COMPONENTS.hammer[:common][:initial_delay].to_i
-    @hammer = Hammer.new.run
-  end
-rescue => err
-  ahn_log.hammer.error "Error when attempting to auto start the Hammer"
-  ahn_log.hammer.error err
 end
