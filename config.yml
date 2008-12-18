@@ -12,6 +12,7 @@
 #    :auto_start: true                       Set to true to start the hammer at startup or false to allow it to be started by the GUI
 #    :enable_db: false                       Set to true if you would like to log events to CouchDB for analisys
 #    :db_uri: http://localhost:5984/hammer   URL to the CouchDB instance and database you would like to store events
+#    :recording_format: gsm                  Format to record the call in (ie - gsm, wav, alaw, ulaw, etc)
 
 :common:
     :initial_delay: 5
@@ -24,6 +25,7 @@
     :auto_start: true
     :enable_db: false
     :db_uri: http://localhost:5984/hammer
+    :recording_format: gsm
 
 #Settings for the Originate command to the Manager API, each one is a unique profile
 #You may have many dial_strategies, but only one is required.
