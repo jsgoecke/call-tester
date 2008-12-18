@@ -1,5 +1,7 @@
 require 'uuidtools'
 
+#Intialize the component attaching to the database if configured
+#and creating the Hammer object
 initialization do
   begin
     #Now launch the hammer and let it run
