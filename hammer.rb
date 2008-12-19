@@ -73,7 +73,7 @@ end
 #Methods to expose to events.rb
 methods_for :events do
   def log_event(data)
-    ::DATABASE.save(data)
+    ::DATABASE.save(data.headers)
   end
 end
 

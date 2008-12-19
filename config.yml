@@ -48,14 +48,14 @@
 
 :dial_strategies:
   - dial1: 
-      :channel: IAX2/adhearsion_hammer:hammer1234@call.mydomain.net/
+      :channel: IAX2/localhost/
       :context: adhearsion_hammer
       :extension: 1000
       :priority: 1
       :timeout: 43200000
       :async: TRUE
   - dial2: 
-      :channel: IAX2/teliax/
+      :channel: IAX2/localhost/
       :context: adhearsion_hammer
       :extension: 1000
       :priority: 1
