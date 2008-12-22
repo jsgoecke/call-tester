@@ -149,7 +149,7 @@ class Hammer
       else
         execute_strategies
       end
-    cnt += 1
+      cnt += 1
     end
   end
   
@@ -161,7 +161,16 @@ class Hammer
       treatment_strategy.each_key {|key| strategy_name = key}
       treatment_strategy.each_value {|value| treatment_strategy = value}
 
-      result = launch_call(strategy_name, treatment_strategy)
+      #Find the correct dial sequence to use for the strategy
+      dial_num, cnt = 0, 0
+      COMPONENTS.hammer[:dial_strategies].each do |dial_strategy|
+        if dial_strategy.key?(treatment_strategy[:dial])
+          dial_num = cnt
+        end
+        cnt += 1
+      end
+      
+      result = launch_call(strategy_name, treatment_strategy, dial_num)
 
       if COMPONENTS.hammer[:common][:delay_between_calls] == 'random'
         sleep rand(COMPONENTS.hammer[:common][:max_random_between_calls])
@@ -172,16 +181,16 @@ class Hammer
   end
   
   #Launch the individual phone calls
-  def launch_call(strategy_name, treatment_strategy)
-    channel = COMPONENTS.hammer[:dial_strategies][0][treatment_strategy[:dial]][:channel] + treatment_strategy[:number].to_s
+  def launch_call(strategy_name, treatment_strategy, dial_num)
+    channel = COMPONENTS.hammer[:dial_strategies][dial_num][treatment_strategy[:dial]][:channel] + treatment_strategy[:number].to_s
     options = { "Channel" => channel,
-                "Context" =>  COMPONENTS.hammer[:dial_strategies][0][treatment_strategy[:dial]][:context],
-                "Exten" =>  COMPONENTS.hammer[:dial_strategies][0][treatment_strategy[:dial]][:extension],
-                "Priority" => COMPONENTS.hammer[:dial_strategies][0][treatment_strategy[:dial]][:priority],
+                "Context" =>  COMPONENTS.hammer[:dial_strategies][dial_num][treatment_strategy[:dial]][:context],
+                "Exten" =>  COMPONENTS.hammer[:dial_strategies][dial_num][treatment_strategy[:dial]][:extension],
+                "Priority" => COMPONENTS.hammer[:dial_strategies][dial_num][treatment_strategy[:dial]][:priority],
                 "Callerid" => treatment_strategy[:callerid],
-                "Timeout" => COMPONENTS.hammer[:dial_strategies][0][treatment_strategy[:dial]][:timeout],
+                "Timeout" => COMPONENTS.hammer[:dial_strategies][dial_num][treatment_strategy[:dial]][:timeout],
                 "Variable" => "strategy_name=" + strategy_name,
-				        "Async" => COMPONENTS.hammer[:dial_strategies][0][treatment_strategy[:dial]][:async] }
+				        "Async" => COMPONENTS.hammer[:dial_strategies][dial_num][treatment_strategy[:dial]][:async] }
     result = Adhearsion::VoIP::Asterisk.manager_interface.originate options
     ahn_log.hammer.debug result["Message"]
     return result
