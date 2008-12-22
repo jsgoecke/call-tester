@@ -10,7 +10,7 @@
 #    :max_random_call_length: 200            Maximum call length when treatment_strategies -> call_length is set to: random
 #    :thread_cycles: false                   Set this to true to launch each cycle in its own thread. Does nothing if cycle_length set to 1
 #    :auto_start: true                       Set to true to start the hammer at startup or false to allow it to be started by the GUI
-#    :enable_db: false                       Set to true if you would like to log events to CouchDB for analisys
+#    :enable_db: false                       Set to true if you would like to log events to CouchDB (http://www.couchdb.org) for analisys
 #    :db_uri: http://localhost:5984/hammer   URL to the CouchDB instance and database you would like to store events
 #    :recording_format: gsm                  Format to record the call in (ie - gsm, wav, alaw, ulaw, etc)
 
