@@ -1,18 +1,10 @@
 #Gui written with Shoes to control the Hammer
-Shoes.app :width => 200, :height => 500, :title => 'Hammer Controls' do
+Shoes.app :width => 200, :height => 250, :title => 'Hammer Controls' do
   @hostname = nil
   @default_drb_port = 9050
   
   #Set some background colors
-  background '#FFFFFF' #'rgb(255, 255, 255)'
-  fill rgb(0, 0.6, 0.9, 0.1)
-  stroke rgb(0, 0.6, 0.9)
-  strokewidth 0.25
-  20.times {
-    oval :left => (-5..self.width).rand,
-      :top => (-5..self.height).rand,
-      :radius => (25..50).rand
-  }
+  background '#FFFFFF'
   
   #Create a 'stack' of elements that are grouped together
   stack :center => true, :width => 200, :margin => 30 do
@@ -21,8 +13,8 @@ Shoes.app :width => 200, :height => 500, :title => 'Hammer Controls' do
       if @hostname.text == ''
         alert 'Please enter in a hostname and port in the text field (ie - localhost:9050)'
       else      
-        #Add some code here
-        alert "Hammer Status is... @ #{@hostname.text}"
+        result = connect_to_drb(@hostname.text, 'status')
+        alert "Hammer Status is... #{result[:message]} @ #{@hostname.text}"
       end
     end
     button 'Start Hammer' do
@@ -30,7 +22,7 @@ Shoes.app :width => 200, :height => 500, :title => 'Hammer Controls' do
         alert 'Please enter in a hostname and port in the text field (ie - localhost:9050)'
       else
         if confirm("Are you sure you want to start the hammer?")
-          #Add some code here
+          result = connect_to_drb(@hostname.text, 'start')
           alert "Starting the hammer @ #{@hostname.text}"
         end
       end
@@ -65,7 +57,7 @@ def connect_to_drb(url, action)
     when 'stop'
       result = hammer.stop_calls
     when 'status'
-      result = hammer.running_status
+      result = hammer.hammer_status
     end
     return { :status => 'ok', :message => result }
   rescue => err

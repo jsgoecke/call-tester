@@ -83,9 +83,15 @@ methods_for :rpc do
     ::HAMMER_OBJ.start
     ahn_log.hammer.debug 'Hammer started...'
   end
+  
   def stop_hammer
     ::HAMMER_OBJ.stop
     ahn_log.hammer.debug 'Hammer stopped...'
+  end
+  
+  def hammer_status
+    ::HAMMER_OBJ.running_status
+    ahn_log.hammer.debug 'Hammer returned status...'
   end
 end
 
