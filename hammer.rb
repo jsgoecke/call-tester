@@ -111,7 +111,7 @@ class Hammer
       #and check again
       if @running == true
         make_calls
-        sleep COMPONENTS.hammer[:common][:delay_between_cycles]
+        sleep COMPONENTS.hammer[:common][:delay_between_cycle]
       else
         sleep 2
       end
