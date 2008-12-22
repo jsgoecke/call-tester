@@ -16,7 +16,6 @@ Shoes.app :width => 200, :height => 500, :title => 'Hammer Controls' do
   
   #Create a 'stack' of elements that are grouped together
   stack :center => true, :width => 200, :margin => 30 do
-    image 'img/hammer.jpg'
     @hostname = edit_line :width => 120
     button 'Hammer Status' do
       if @hostname.text == ''
