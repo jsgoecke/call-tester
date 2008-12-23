@@ -1,29 +1,26 @@
 Copyright (C) 2008 Jason Goecke
 
-What is Hammer?
-==============
+== Hammer for Adhearsion
 
-The Hammer is an [Adhearsion] component used to generate live inbound call load on an another Asterisk or Telephony system. The Hammer also provides a facility to play DTMF tones at the beginning of a call in order to traverse an IVR menu. The intent is to use this component to load test telephony systems.
+The Presence Hammer is used to generate live inbound call load on an Asterisk/OpenGate system. The Presence Hammer also provides a facility to play DTMF tones at the beginning of a call in order to traverse an IVR menu, such as one developed by IR/IR-VO. The intent is use this facility in both engineering QA as well as a tool for operations in the field to load test each and every OpenGate implementation as part of our project methodology.
 
-Requirements?
-=============
+=== Configuration
 
-[Ruby v1.8.6+]: http://www.rubylang.org or [JRuby v1.1.5+]: http://jruby.codehaus.org/
-[Asterisk v1.4+]: http://www.asterisk.org
-[Adhearsion v0.8+]: http://www.adhersion.com
-[Uuid-tools gem]
+  See ahn_project/comoponents/hammer/config.yml for details on configuration. Also, if you would like to capture events to a CouchDB instance you must include this in the ahn_project/events.rb (filter as you like):
 
-How does it work?
-=================
+	events.asterisk.manager_interface.each do |event|
+   	  log_event(event)
+	end
 
-The Hammer component uses Adhearsion to generate call traffic via Asterisk. More to come...
+=== Requirements
 
-Installing
-==========
+- Ruby 1.8.6+ or JRuby 1.1.6+ (Events capture currently not supported with JRuby)
+- Adhearsion 0.8.0+
+- CouchRest 0.10.1+ (only if you enable logging to the CouchDB)
 
-In path_to_your_ahn_project/components/ do the following:
+=== Installing
 
-git clone git://github.com/jsgoecke/hammer.git
+  In path_to_your_ahn_project/components/ do the following:
 
-Setting up Hammer
-=================
+  git clone git://github.com/jsgoecke/hammer.git
+
