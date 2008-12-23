@@ -6,6 +6,24 @@ Shoes.app :width => 200, :height => 250, :title => 'Hammer Controls' do
   #Set some background colors
   background '#FFFFFF'
   
+  #Use this method to connect to the DRb service
+  def connect_to_drb(url, action)
+    begin
+      hammer = DRbObject.new_with_uri url
+      case action
+      when 'start'
+        result = hammer.start_calls
+      when 'stop'
+        result = hammer.stop_calls
+      when 'status'
+        result = hammer.hammer_status
+      end
+      return { :status => 'ok', :message => result }
+    rescue => err
+      return { :status => 'error', :message => err }
+    end
+  end
+  
   #Create a 'stack' of elements that are grouped together
   stack :center => true, :width => 200, :margin => 30 do
     @hostname = edit_line :width => 120
@@ -45,22 +63,4 @@ Shoes.app :width => 200, :height => 250, :title => 'Hammer Controls' do
   end
   
   para 'Copyright (C) 2008 Jason Goecke', :align => 'center', :size => 8
-end
-
-#Use this method to connect to the DRb service
-def connect_to_drb(url, action)
-  begin
-    hammer = DRbObject.new_with_uri url
-    case action
-    when 'start'
-      result = hammer.start_calls
-    when 'stop'
-      result = hammer.stop_calls
-    when 'status'
-      result = hammer.hammer_status
-    end
-    return { :status => 'ok', :message => result }
-  rescue => err
-    return { :status => 'error', :message => err }
-  end
 end
