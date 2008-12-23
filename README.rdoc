@@ -4,7 +4,13 @@ The Hammer is used to generate live inbound call load on an Asterisk system. The
 
 === Configuration
 
-See ahn_project/comoponents/hammer/config.yml for details on configuration. Also, if you would like to capture events to a CouchDB instance you must include this in the ahn_project/events.rb (filter as you like):
+See ahn_project/comoponents/hammer/config.yml for details on configuration. All you need to add to your ahn_project/dialplan.rb is the corresponding context with this method as follows:
+
+	adhearsion {
+  	  treat_call
+	}
+
+Also, if you would like to capture events to a CouchDB instance you must include this in the ahn_project/events.rb (filter as you like):
 
 	events.asterisk.manager_interface.each do |event|
    	  log_event(event)
