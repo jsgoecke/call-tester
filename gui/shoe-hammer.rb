@@ -19,9 +19,9 @@ Shoes.app :width => 200, :height => 250, :title => 'Hammer Controls' do
       when 'status'
         result = hammer.hammer_status
       end
-      return { :status => 'ok', :message => result }
+      return { :request => action, :status => 'ok', :message => result }
     rescue => err
-      return { :status => 'error', :message => err }
+      return { :request => action, :status => 'error', :message => err }
     end
   end
   
@@ -33,7 +33,7 @@ Shoes.app :width => 200, :height => 250, :title => 'Hammer Controls' do
         alert 'Please enter in a hostname and port in the text field (ie - localhost:9050)'
       else      
         result = connect_to_drb(@hostname.text, 'status')
-        alert "Hammer Status is... #{result[:message]} @ #{@hostname.text}"
+        alert result.inspect
       end
     end
     button 'Start Hammer' do
@@ -42,7 +42,7 @@ Shoes.app :width => 200, :height => 250, :title => 'Hammer Controls' do
       else
         if confirm("Are you sure you want to start the hammer?")
           result = connect_to_drb(@hostname.text, 'start')
-          alert "Starting the hammer @ #{@hostname.text}"
+          alert result.inspect
         end
       end
     end
@@ -52,7 +52,7 @@ Shoes.app :width => 200, :height => 250, :title => 'Hammer Controls' do
       else
         if confirm("Are you sure you want to stop the hammer?")
           result = connect_to_drb(@hostname.text, 'stop')
-          alert "Stopping the hammer @ #{@hostname.text}. Result: #{result[:message]}"
+          alert result.inspect
         end
       end    
     end
