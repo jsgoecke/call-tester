@@ -8,6 +8,7 @@ Shoes.app :width => 200, :height => 250, :title => 'Hammer Controls' do
   
   #Use this method to connect to the DRb service
   def connect_to_drb(url, action)
+    url = "druby://" + url
     begin
       hammer = DRbObject.new_with_uri url
       case action
