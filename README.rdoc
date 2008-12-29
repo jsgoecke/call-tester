@@ -4,7 +4,7 @@ The Hammer is used to generate live inbound call load on an Asterisk system. The
 
 === Configuration
 
-See ahn_project/comoponents/hammer/config.yml for details on configuration. All you need to add to your ahn_project/dialplan.rb is the corresponding context with this method as follows:
+See ahn_project/components/hammer/config.yml for details on configuration. All you need to add to your ahn_project/dialplan.rb is the corresponding context with this method as follows:
 
 	adhearsion {
   	  treat_call

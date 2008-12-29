@@ -4,7 +4,7 @@
 #:common:
 #    :initial_delay: 5                       Number of seconds to wait to allow the Adhearsion framework to initialize when starting hammer
 #    :cycle_length: 1                        Number of calls to launch for each treatment_strategy per cycle (cycle_length: 4 with 3 treatment strategies configured below will launch 12 total calls)
-#    :delay_between_cycle: 300               Number of seconds to delay between each cylce of the dial_strategies
+#    :delay_between_cycle: 300               Number of seconds to delay between each cycle of the dial_strategies
 #    :delay_between_calls: 2                 Seconds to delay between launching each call, may also be set to: random
 #    :max_random_between_calls: 5            Maximum call length when random is used for delay_between_calls above
 #    :max_random_call_length: 200            Maximum call length when treatment_strategies -> call_length is set to: random
@@ -63,7 +63,7 @@
       :async: TRUE
   
 #This is where you set how many calls in a cycle you want to launch and of what type
-#each of the elements below will launch one call with the dtmf settings, the lenght of call
+#each of the elements below will launch one call with the dtmf settings, the length of call
 #and the profile to use from above.
 
 #:treatment_strategies:
@@ -110,12 +110,12 @@
       :message: tt-monkeys
       :record: false
       
-#If you would like the far side to be treated from this same instance you may set yourn configuration options here
+#If you would like the far side to be treated from this same instance you may set your configuration options here
 #The recommended dialplan in the remote Asterisk is:
 #   [adhearsion_hammer]
 #   exten => 1000,1,AGI(agi://path_to_adhearsion_hammer_agi_server)
 #   exten => 1000,2,Hangup
-#Do not forget that you will need to configure the channel, SIP, IAX2, etc. (depending on your dial_strategies=>channel setting above) conf files to recieve those calls.
+#Do not forget that you will need to configure the channel, SIP, IAX2, etc. (depending on your dial_strategies=>channel setting above) conf files to receive those calls.
 
 #:called_treatment:
 #    :message: tt-monkeys                   message to play on the remote server so you have 2 way audio simulation
