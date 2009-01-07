@@ -1,6 +1,6 @@
 == Hammer for Adhearsion
 
-The Hammer is used to generate live inbound call load on an Asterisk system. The Hammer also provides a facility to play DTMF tones at the beginning of a call in order to traverse an IVR menu. The intent is use this facility in both engineering QA as well as a tool for operations in the field to load test each and every Asterisk or voice platform implementation.
+The Hammer is used to generate live inbound call load on an Asterisk or any other telephony system. The Hammer also provides a facility to play DTMF tones at the beginning of a call in order to traverse an IVR menu and reach various inbound call routes. The intent is use this facility in both engineering QA as well as a tool for operations in the field to load test each and every Asterisk or voice platform implementation. 
 
 === Configuration
 
@@ -27,7 +27,7 @@ Also, if you would like to capture events to a CouchDB instance you must include
 
 In path_to_your_ahn_project/components/ do the following:
 
-    git clone git://github.com/jsgoecke/hammer.git
+    sudo gem install jsgoecke-hammer --source=http://gems.github.com/
 
 === Screencasts
 
