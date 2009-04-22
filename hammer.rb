@@ -31,7 +31,7 @@ methods_for :dialplan do
 
     if treatment_strategy[strategy_name][:record] == true
       execute("MixMonitor",
-              "hammer-#{strategy_name}-#{UUID.random_create}.#{COMPONENTS.hammer[:common][:recording_format]}")
+              "hammer-#{strategy_name}-#{new_guid}.#{COMPONENTS.hammer[:common][:recording_format]}")
     end
     
     #Now, lets treat the call
