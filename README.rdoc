@@ -25,9 +25,9 @@ Also, if you would like to capture events to a CouchDB instance you must include
 
 === Installing
 
-In path_to_your_ahn_project/components/ do the following:
+In the ~ahn_project/components directory:
 
-    sudo gem install jsgoecke-hammer --source=http://gems.github.com/
+    git clone git://github.com/jsgoecke/hammer.git
 
 === Screencasts
 
