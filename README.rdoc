@@ -1,6 +1,6 @@
-== Hammer for Adhearsion
+== Call Tester for Adhearsion
 
-The Hammer is used to generate live inbound call load on an Asterisk or any other telephony system. The Hammer also provides a facility to play DTMF tones at the beginning of a call in order to traverse an IVR menu and reach various inbound call routes. The intent is use this facility in both engineering QA as well as a tool for operations in the field to load test each and every Asterisk or voice platform implementation. 
+The Call Tester is used to generate live inbound call load on an Asterisk or any other telephony system. The Call Tester also provides a facility to play DTMF tones at the beginning of a call in order to traverse an IVR menu and reach various inbound call routes. The intent is use this facility in both engineering QA as well as a tool for operations in the field to load test each and every Asterisk or voice platform implementation. 
 
 === Configuration
 
@@ -21,13 +21,13 @@ Also, if you would like to capture events to a CouchDB instance you must include
 - Ruby v1.8.6+ or JRuby v1.1.6+ (Events capture currently not supported with JRuby)
 - Adhearsion v0.8.0+
 - CouchRest v0.10.1+ (only if you enable logging to the CouchDB)
-- Shoes 2/Raisins (only if you want to use the GUI to check the status/start/stop of the Hammer)
+- Shoes 2/Raisins (only if you want to use the GUI to check the status/start/stop of the Call-Tester)
 
 === Installing
 
 In the ~ahn_project/components directory:
 
-    git clone git://github.com/jsgoecke/hammer.git
+    git clone git://github.com/jsgoecke/call-tester.git
 
 === Screencasts
 
